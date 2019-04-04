@@ -9,10 +9,19 @@ import PromiseKit
 
 @objc
 public protocol AttachmentApprovalViewControllerDelegate: class {
-    func attachmentApproval(_ attachmentApproval: AttachmentApprovalViewController, didApproveAttachments attachments: [SignalAttachment], messageText: String?)
-    func attachmentApproval(_ attachmentApproval: AttachmentApprovalViewController, didCancelAttachments attachments: [SignalAttachment])
-    @objc optional func attachmentApproval(_ attachmentApproval: AttachmentApprovalViewController, addMoreToAttachments attachments: [SignalAttachment])
-    @objc optional func attachmentApproval(_ attachmentApproval: AttachmentApprovalViewController, changedCaptionOfAttachment attachment: SignalAttachment)
+    func attachmentApproval(_ attachmentApproval: AttachmentApprovalViewController,
+                            didApproveAttachments attachments: [SignalAttachment], messageText: String?)
+
+    func attachmentApprovalDidCancel(_ attachmentApproval: AttachmentApprovalViewController)
+
+    func attachmentApproval(_ attachmentApproval: AttachmentApprovalViewController,
+                            didChangeMessageText newMessageText: String?)
+
+    @objc
+    optional func attachmentApproval(_ attachmentApproval: AttachmentApprovalViewController, didRemoveAttachment attachment: SignalAttachment)
+
+    @objc
+    optional func attachmentApprovalDidTapAddMore(_ attachmentApproval: AttachmentApprovalViewController)
 }
 
 // MARK: -
@@ -217,6 +226,15 @@ public class AttachmentApprovalViewController: UIPageViewController, UIPageViewC
                               shouldHideControls: shouldHideControls)
     }
 
+    public var messageText: String? {
+        get {
+            return attachmentTextToolbar.messageText
+        }
+        set {
+            attachmentTextToolbar.messageText = newValue
+        }
+    }
+
     // MARK: - Navigation Bar
 
     public func updateNavigationBar() {
@@ -364,6 +382,7 @@ public class AttachmentApprovalViewController: UIPageViewController, UIPageViewC
         },
                        completion: { _ in
                         self.attachmentItemCollection.remove(item: attachmentItem)
+                        self.approvalDelegate?.attachmentApproval?(self, didRemoveAttachment: attachmentItem.attachment)
                         self.updateMediaRail()
         })
     }
@@ -640,7 +659,7 @@ public class AttachmentApprovalViewController: UIPageViewController, UIPageViewC
     }
 
     private func cancelPressed() {
-        self.approvalDelegate?.attachmentApproval(self, didCancelAttachments: attachments)
+        self.approvalDelegate?.attachmentApprovalDidCancel(self)
     }
 
     @objc func didTapCaption(sender: UIButton) {
@@ -679,7 +698,11 @@ extension AttachmentApprovalViewController: AttachmentTextToolbarDelegate {
     }
 
     func attachmentTextToolbarDidAddMore(_ attachmentTextToolbar: AttachmentTextToolbar) {
-        self.approvalDelegate?.attachmentApproval?(self, addMoreToAttachments: attachments)
+        self.approvalDelegate?.attachmentApprovalDidTapAddMore?(self)
+    }
+
+    func attachmentTextToolbarDidChange(_ attachmentTextToolbar: AttachmentTextToolbar) {
+        approvalDelegate?.attachmentApproval(self, didChangeMessageText: attachmentTextToolbar.messageText)
     }
 }
 

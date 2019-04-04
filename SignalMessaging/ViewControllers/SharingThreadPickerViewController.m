@@ -305,10 +305,15 @@ typedef void (^SendMessageBlock)(SendCompletionBlock completion);
                fromViewController:attachmentApproval];
 }
 
-- (void)attachmentApproval:(AttachmentApprovalViewController *)attachmentApproval
-      didCancelAttachments:(NSArray<SignalAttachment *> *)attachment
+- (void)attachmentApprovalDidCancel:(AttachmentApprovalViewController *)attachmentApproval
 {
     [self cancelShareExperience];
+}
+
+- (void)attachmentApproval:(AttachmentApprovalViewController *)attachmentApproval
+      didChangeMessageText:(nullable NSString *)newMessageText
+{
+    // no-op
 }
 
 #pragma mark - MessageApprovalViewControllerDelegate

@@ -133,8 +133,7 @@ typedef enum : NSUInteger {
     UIDocumentMenuDelegate,
     UIDocumentPickerDelegate,
     UIImagePickerControllerDelegate,
-    OWSImagePickerControllerDelegate,
-    OWSPhotoCaptureViewControllerDelegate,
+    SendMediaNavDelegate,
     UINavigationControllerDelegate,
     UITextViewDelegate,
     ConversationCollectionViewDelegate,
@@ -2848,24 +2847,6 @@ typedef enum : NSUInteger {
     [self showApprovalDialogForAttachment:attachment];
 }
 
-#pragma mark - OWSPhotoCaptureViewControllerDelegate
-
-- (void)photoCaptureViewController:(OWSPhotoCaptureViewController *)photoCaptureViewController
-     didFinishProcessingAttachment:(SignalAttachment *)attachment
-{
-    OWSLogDebug(@"");
-    [self dismissViewControllerAnimated:YES
-                             completion:^{
-                                 [self showApprovalDialogForAttachment:attachment];
-                             }];
-}
-
-- (void)photoCaptureViewControllerDidCancel:(OWSPhotoCaptureViewController *)photoCaptureViewController
-{
-    OWSLogDebug(@"");
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
 #pragma mark - UIImagePickerController
 
 /*
@@ -2888,19 +2869,8 @@ typedef enum : NSUInteger {
             UIViewController *pickerModal;
 
             if (SSKFeatureFlags.useCustomPhotoCapture) {
-                OWSPhotoCaptureViewController *captureVC = [OWSPhotoCaptureViewController new];
-                captureVC.delegate = self;
-                OWSNavigationController *navController =
-                    [[OWSNavigationController alloc] initWithRootViewController:captureVC];
-                UINavigationBar *navigationBar = navController.navigationBar;
-                if (![navigationBar isKindOfClass:[OWSNavigationBar class]]) {
-                    OWSFailDebug(@"navigationBar was nil or unexpected class");
-                } else {
-                    OWSNavigationBar *owsNavigationBar = (OWSNavigationBar *)navigationBar;
-                    [owsNavigationBar overrideThemeWithType:NavigationBarThemeOverrideClear];
-                }
-                navController.ows_prefersStatusBarHidden = @(YES);
-
+                SendMediaNavigationController *navController = [SendMediaNavigationController showingCameraFirst];
+                navController.sendMediaNavDelegate = self;
                 pickerModal = navController;
             } else {
                 UIImagePickerController *picker = [OWSImagePickerController new];
@@ -2944,22 +2914,8 @@ typedef enum : NSUInteger {
             return;
         }
 
-        UIViewController *pickerModal;
-        if (SignalAttachment.isMultiSendEnabled) {
-            OWSImagePickerGridController *picker = [OWSImagePickerGridController new];
-            picker.delegate = self;
-
-            OWSNavigationController *modal = [[OWSNavigationController alloc] initWithRootViewController:picker];
-            modal.ows_prefersStatusBarHidden = @(YES);
-            pickerModal = modal;
-        } else {
-            UIImagePickerController *picker = [OWSImagePickerController new];
-            picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-            picker.delegate = self;
-            picker.mediaTypes = @[ (__bridge NSString *)kUTTypeImage, (__bridge NSString *)kUTTypeMovie ];
-
-            pickerModal = picker;
-        }
+        SendMediaNavigationController *pickerModal = [SendMediaNavigationController showingMediaLibraryFirst];
+        pickerModal.sendMediaNavDelegate = self;
 
         [self dismissKeyBoard];
         [self presentViewController:pickerModal animated:YES completion:nil];
@@ -2982,11 +2938,16 @@ typedef enum : NSUInteger {
     self.view.frame = frame;
 }
 
-#pragma mark - OWSImagePickerControllerDelegate
+#pragma mark - SendMediaNavDelegate
 
-- (void)imagePicker:(OWSImagePickerGridController *)imagePicker
-    didPickImageAttachments:(NSArray<SignalAttachment *> *)attachments
-                messageText:(NSString *_Nullable)messageText
+- (void)sendMediaNavDidCancel:(SendMediaNavigationController *)sendMediaNavigationController
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)sendMediaNav:(SendMediaNavigationController *)sendMediaNavigationController
+    didApproveAttachments:(NSArray<SignalAttachment *> *)attachments
+              messageText:(nullable NSString *)messageText
 {
     OWSAssertDebug(self.isFirstResponder);
     if (@available(iOS 10, *)) {
@@ -2996,6 +2957,24 @@ typedef enum : NSUInteger {
     }
 
     [self tryToSendAttachments:attachments messageText:messageText];
+    [self.inputToolbar clearTextMessageAnimated:NO];
+
+    // we want to already be at the bottom when the user returns, rather than have to watch
+    // the new message scroll into view.
+    [self scrollToBottomAnimated:NO];
+
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (nullable NSString *)sendMediaNavInitialMessageText:(SendMediaNavigationController *)sendMediaNavigationController
+{
+    return self.inputToolbar.messageText;
+}
+
+- (void)sendMediaNav:(SendMediaNavigationController *)sendMediaNavigationController
+    didChangeMessageText:(nullable NSString *)messageText
+{
+    [self.inputToolbar setMessageText:messageText animated:NO];
 }
 
 #pragma mark - UIImagePickerControllerDelegate
@@ -3078,11 +3057,8 @@ typedef enum : NSUInteger {
                                  }];
     } else {
         // Non-Video image picked from library
-        if (SignalAttachment.isMultiSendEnabled) {
-            OWSFailDebug(@"Only use UIImagePicker for camera/video capture. Picking media from UIImagePicker is not "
-                         @"supported. ");
-        }
-
+        OWSFailDebug(
+            @"Only use UIImagePicker for camera/video capture. Picking media from UIImagePicker is not supported. ");
 
         // To avoid re-encoding GIF and PNG's as JPEG we have to get the raw data of
         // the selected item vs. using the UIImagePickerControllerOriginalImage
@@ -3967,7 +3943,9 @@ typedef enum : NSUInteger {
                messageText:(NSString *_Nullable)messageText
 {
     [self tryToSendAttachments:attachments messageText:messageText];
+    [self.inputToolbar clearTextMessageAnimated:NO];
     [self dismissViewControllerAnimated:YES completion:nil];
+
     // We always want to scroll to the bottom of the conversation after the local user
     // sends a message.  Normally, this is taken care of in yapDatabaseModified:, but
     // we don't listen to db modifications when this view isn't visible, i.e. when the
@@ -3975,11 +3953,18 @@ typedef enum : NSUInteger {
     [self scrollToBottomAnimated:NO];
 }
 
-- (void)attachmentApproval:(AttachmentApprovalViewController *)attachmentApproval
-      didCancelAttachments:(NSArray<SignalAttachment *> *)attachment
+- (void)attachmentApprovalDidCancel:(AttachmentApprovalViewController *)attachmentApproval
 {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
+
+- (void)attachmentApproval:(AttachmentApprovalViewController *)attachmentApproval
+      didChangeMessageText:(nullable NSString *)newMessageText
+{
+    [self.inputToolbar setMessageText:newMessageText animated:NO];
+}
+
+#pragma mark -
 
 - (void)showErrorAlertForAttachment:(SignalAttachment *_Nullable)attachment
 {
