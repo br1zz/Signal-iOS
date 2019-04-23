@@ -6,7 +6,7 @@
 #import "OWSContactAvatarBuilder.h"
 #import "OWSMessageBubbleView.h"
 #import "OWSMessageHeaderView.h"
-#import "Signal-Swift.h"
+#import "Flash-Swift.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

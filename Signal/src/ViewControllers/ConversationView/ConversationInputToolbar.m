@@ -7,7 +7,7 @@
 #import "Environment.h"
 #import "OWSContactsManager.h"
 #import "OWSMath.h"
-#import "Signal-Swift.h"
+#import "Flash-Swift.h"
 #import "UIColor+OWS.h"
 #import "UIFont+OWS.h"
 #import "ViewControllerUtils.h"

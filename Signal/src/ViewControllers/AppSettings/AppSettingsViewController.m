@@ -14,7 +14,7 @@
 #import "PrivacySettingsTableViewController.h"
 #import "ProfileViewController.h"
 #import "RegistrationUtils.h"
-#import "Signal-Swift.h"
+#import "Flash-Swift.h"
 #import <SignalMessaging/Environment.h>
 #import <SignalMessaging/OWSContactsManager.h>
 #import <SignalMessaging/UIUtil.h>

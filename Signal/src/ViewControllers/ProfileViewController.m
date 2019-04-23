@@ -7,7 +7,7 @@
 #import "AvatarViewHelper.h"
 #import "HomeViewController.h"
 #import "OWSNavigationController.h"
-#import "Signal-Swift.h"
+#import "Flash-Swift.h"
 #import "SignalsNavigationController.h"
 #import "UIColor+OWS.h"
 #import "UIFont+OWS.h"
