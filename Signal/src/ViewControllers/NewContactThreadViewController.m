@@ -248,9 +248,6 @@ NS_ASSUME_NONNULL_BEGIN
     lastSubview = subtitleLabel;
 
     UIButton *inviteContactsButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [inviteContactsButton setTitle:NSLocalizedString(@"INVITE_FRIENDS_CONTACT_TABLE_BUTTON",
-                                       "Label for the cell that presents the 'invite contacts' workflow.")
-                          forState:UIControlStateNormal];
     [inviteContactsButton setTitleColor:[UIColor ows_materialBlueColor] forState:UIControlStateNormal];
     [inviteContactsButton.titleLabel setFont:[UIFont ows_regularFontWithSize:17.f]];
     [contents addSubview:inviteContactsButton];

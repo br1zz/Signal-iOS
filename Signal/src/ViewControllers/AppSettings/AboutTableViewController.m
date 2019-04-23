@@ -68,12 +68,6 @@
 
     OWSTableSection *helpSection = [OWSTableSection new];
     helpSection.headerTitle = NSLocalizedString(@"SETTINGS_HELP_HEADER", @"");
-    [helpSection addItem:[OWSTableItem disclosureItemWithText:NSLocalizedString(@"SETTINGS_SUPPORT", @"")
-                                      accessibilityIdentifier:ACCESSIBILITY_IDENTIFIER_WITH_NAME(self, @"support")
-                                                  actionBlock:^{
-                                                      [[UIApplication sharedApplication]
-                                                          openURL:[NSURL URLWithString:@"https://support.signal.org"]];
-                                                  }]];
     [contents addSection:helpSection];
 
     UILabel *copyrightLabel = [UILabel new];
