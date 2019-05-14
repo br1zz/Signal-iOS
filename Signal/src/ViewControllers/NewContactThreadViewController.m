@@ -379,7 +379,7 @@ NS_ASSUME_NONNULL_BEGIN
                                         [weakSelf presentInviteFlow];
                                     }]];
     }
-    [contents addSection:staticSection];
+    //[contents addSection:staticSection];
 
     BOOL hasSearchText = self.searchText.length > 0;
 
