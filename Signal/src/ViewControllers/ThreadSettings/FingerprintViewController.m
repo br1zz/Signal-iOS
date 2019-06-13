@@ -218,10 +218,10 @@ typedef void (^CustomLayoutBlock)(void);
     [learnMoreButton
         addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self
                                                                      action:@selector(learnMoreButtonTapped:)]];
-    [self.view addSubview:learnMoreButton];
-    [learnMoreButton autoPinWidthToSuperview];
-    [learnMoreButton autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:verifyUnverifyButton withOffset:0];
-    SET_SUBVIEW_ACCESSIBILITY_IDENTIFIER(self, learnMoreButton);
+    //[self.view addSubview:learnMoreButton];
+    //[learnMoreButton autoPinWidthToSuperview];
+    //[learnMoreButton autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:verifyUnverifyButton withOffset:0];
+    //SET_SUBVIEW_ACCESSIBILITY_IDENTIFIER(self, learnMoreButton);
 
     UILabel *learnMoreLabel = [UILabel new];
     learnMoreLabel.attributedText = [[NSAttributedString alloc]
@@ -250,7 +250,7 @@ typedef void (^CustomLayoutBlock)(void);
     instructionsLabel.lineBreakMode = NSLineBreakByWordWrapping;
     [self.view addSubview:instructionsLabel];
     [instructionsLabel autoPinWidthToSuperviewWithMargin:16.f];
-    [instructionsLabel autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:learnMoreButton withOffset:0];
+    [instructionsLabel autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:verifyUnverifyButton withOffset:0];
 
     // Fingerprint Label
     UILabel *fingerprintLabel = [UILabel new];

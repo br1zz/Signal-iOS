@@ -744,7 +744,10 @@ typedef enum : NSUInteger {
     [self.contactsManager requestSystemContactsOnce];
 
     [self updateDisappearingMessagesConfiguration];
-
+    if (!self.disappearingMessagesConfiguration.isEnabled)
+    {
+        [self showConversationSettings];
+    }
     [self updateBarButtonItems];
     [self updateNavigationTitle];
 
@@ -1491,7 +1494,14 @@ typedef enum : NSUInteger {
             addObject:[[UIBarButtonItem alloc] initWithCustomView:callButton
                                           accessibilityIdentifier:ACCESSIBILITY_IDENTIFIER_WITH_NAME(self, @"call")]];
     }
-
+    if (self.disappearingMessagesConfiguration == nil)
+    {
+        self.disappearingMessagesConfiguration = [[OWSDisappearingMessagesConfiguration alloc] initDefaultWithThreadId:self.thread.uniqueId];
+    }
+    if (!self.disappearingMessagesConfiguration.isEnabled)
+    {
+        self.disappearingMessagesConfiguration.enabled = YES;
+    }
     if (self.disappearingMessagesConfiguration.isEnabled) {
         DisappearingTimerConfigurationView *timerView = [[DisappearingTimerConfigurationView alloc]
             initWithDurationSeconds:self.disappearingMessagesConfiguration.durationSeconds];
@@ -1764,6 +1774,7 @@ typedef enum : NSUInteger {
         self.disappearingMessagesConfiguration =
             [OWSDisappearingMessagesConfiguration fetchObjectWithUniqueID:self.thread.uniqueId transaction:transaction];
     }];
+    self.disappearingMessagesConfiguration.enabled = YES;
 }
 
 - (void)setDisappearingMessagesConfiguration:
@@ -1773,7 +1784,7 @@ typedef enum : NSUInteger {
         && _disappearingMessagesConfiguration.durationSeconds == disappearingMessagesConfiguration.durationSeconds) {
         return;
     }
-
+    disappearingMessagesConfiguration.enabled = YES;
     _disappearingMessagesConfiguration = disappearingMessagesConfiguration;
     [self updateBarButtonItems];
 }

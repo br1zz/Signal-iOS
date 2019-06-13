@@ -51,8 +51,8 @@ public class OnboardingSplashViewController: OnboardingBaseViewController {
             UIView.spacer(withHeight: 22),
             titleLabel,
             UIView.spacer(withHeight: 92),
-            explanationLabel,
-            UIView.spacer(withHeight: 24),
+//            explanationLabel,
+//            UIView.spacer(withHeight: 24),
             continueButton
             ])
         stackView.axis = .vertical

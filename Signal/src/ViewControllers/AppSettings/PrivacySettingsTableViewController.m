@@ -379,7 +379,7 @@ static NSString *const kSealedSenderInfoURL = @"https://signal.org/blog/sealed-s
                                              OWSCAssertDebug(url);
                                              [UIApplication.sharedApplication openURL:url];
                                          }]];
-    [contents addSection:unidentifiedDeliveryLearnMoreSection];
+    //[contents addSection:unidentifiedDeliveryLearnMoreSection];
 
     OWSTableSection *linkPreviewsSection = [OWSTableSection new];
     [linkPreviewsSection

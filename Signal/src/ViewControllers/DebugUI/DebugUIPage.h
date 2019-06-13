@@ -8,7 +8,7 @@
 //
 // To show the DebugUI in production builds, comment out the #ifdef and #endif
 #ifdef DEBUG
-#define USE_DEBUG_UI
+//#define USE_DEBUG_UI
 #endif
 
 NS_ASSUME_NONNULL_BEGIN

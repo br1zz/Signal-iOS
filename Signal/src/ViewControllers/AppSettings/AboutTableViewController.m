@@ -56,13 +56,13 @@
                                                   accessoryText:[[[NSBundle mainBundle] infoDictionary]
                                                                     objectForKey:@"CFBundleVersion"]]];
 
-    [informationSection addItem:[OWSTableItem disclosureItemWithText:NSLocalizedString(@"SETTINGS_LEGAL_TERMS_CELL",
-                                                                         @"table cell label")
-                                             accessibilityIdentifier:ACCESSIBILITY_IDENTIFIER_WITH_NAME(self, @"terms")
-                                                         actionBlock:^{
-                                                             [[UIApplication sharedApplication]
-                                                                 openURL:[NSURL URLWithString:kLegalTermsUrlString]];
-                                                         }]];
+//    [informationSection addItem:[OWSTableItem disclosureItemWithText:NSLocalizedString(@"SETTINGS_LEGAL_TERMS_CELL",
+//                                                                         @"table cell label")
+//                                             accessibilityIdentifier:ACCESSIBILITY_IDENTIFIER_WITH_NAME(self, @"terms")
+//                                                         actionBlock:^{
+//                                                             [[UIApplication sharedApplication]
+//                                                                 openURL:[NSURL URLWithString:kLegalTermsUrlString]];
+//                                                         }]];
 
     [contents addSection:informationSection];
 

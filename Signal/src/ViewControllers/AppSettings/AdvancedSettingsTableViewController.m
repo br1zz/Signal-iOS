@@ -111,7 +111,7 @@ NS_ASSUME_NONNULL_BEGIN
                                          }]];
     }
 
-    [contents addSection:loggingSection];
+    //[contents addSection:loggingSection];
 
     OWSTableSection *pushNotificationsSection = [OWSTableSection new];
     pushNotificationsSection.headerTitle

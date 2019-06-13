@@ -766,7 +766,7 @@
 "DISAPPEARING_MESSAGES_CONFIGURATION_GROUP_EXISTING_FORMAT" = "Сообщения в этой беседе исчезнут после %@.";
 
 /* subheading in conversation settings */
-"DISAPPEARING_MESSAGES_DESCRIPTION" = "При включении этой настройки сообщения, отправленные и полученные в этом разговоре, будут исчезать после прочтения.";
+"DISAPPEARING_MESSAGES_DESCRIPTION" = "Сообщения, отправленные и полученные в этом разговоре, будут исчезать после прочтения.";
 
 /* Accessibility hint that contains current timeout information */
 "DISAPPEARING_MESSAGES_HINT" = "В настоящее время сообщения удаляются после %@";

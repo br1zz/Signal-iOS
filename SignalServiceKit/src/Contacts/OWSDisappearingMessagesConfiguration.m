@@ -22,7 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 {
     return [self initWithThreadId:threadId
                           enabled:NO
-                  durationSeconds:OWSDisappearingMessagesConfigurationDefaultExpirationDuration];
+                  durationSeconds:24 * kHourInterval];
 }
 
 - (nullable instancetype)initWithCoder:(NSCoder *)coder
@@ -55,7 +55,7 @@ NS_ASSUME_NONNULL_BEGIN
 {
     OWSDisappearingMessagesConfiguration *savedConfiguration =
         [self fetchObjectWithUniqueID:threadId transaction:transaction];
-    if (savedConfiguration) {
+    if (savedConfiguration && savedConfiguration.enabled == YES) {
         return savedConfiguration;
     } else {
         return [[self alloc] initDefaultWithThreadId:threadId];
@@ -74,8 +74,7 @@ NS_ASSUME_NONNULL_BEGIN
         @(1 * kHourInterval),
         @(6 * kHourInterval),
         @(12 * kHourInterval),
-        @(24 * kHourInterval),
-        @(1 * kWeekInterval)
+        @(24 * kHourInterval)
     ];
 }
 
@@ -87,7 +86,7 @@ NS_ASSUME_NONNULL_BEGIN
         max = [[self.validDurationsSeconds valueForKeyPath:@"@max.intValue"] unsignedIntValue];
 
         // It's safe to update this assert if we add a larger duration
-        OWSAssertDebug(max == 1 * kWeekInterval);
+        OWSAssertDebug(max == 24 * kHourInterval);
     });
 
     return max;

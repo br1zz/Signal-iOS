@@ -476,14 +476,15 @@ const CGFloat kIconViewLength = 24;
                                  rowLabel.font = [UIFont ows_dynamicTypeBodyFont];
                                  rowLabel.lineBreakMode = NSLineBreakByTruncatingTail;
 
-                                 UISwitch *switchView = [UISwitch new];
-                                 switchView.on = strongSelf.disappearingMessagesConfiguration.isEnabled;
-                                 [switchView addTarget:strongSelf
-                                                action:@selector(disappearingMessagesSwitchValueDidChange:)
-                                      forControlEvents:UIControlEventValueChanged];
-
+//                                 UISwitch *switchView = [UISwitch new];
+//                                 switchView.on = strongSelf.disappearingMessagesConfiguration.isEnabled;
+//                                 [switchView addTarget:strongSelf
+//                                                action:@selector(disappearingMessagesSwitchValueDidChange:)
+//                                      forControlEvents:UIControlEventValueChanged];
+                                 //[self updateDisappearingMessagesDurationLabel];
+                                 //[self viewWillDisappear:YES];
                                  UIStackView *topRow =
-                                     [[UIStackView alloc] initWithArrangedSubviews:@[ iconView, rowLabel, switchView ]];
+                                     [[UIStackView alloc] initWithArrangedSubviews:@[ iconView, rowLabel ]];
                                  topRow.spacing = strongSelf.iconSpacing;
                                  topRow.alignment = UIStackViewAlignmentCenter;
                                  [cell.contentView addSubview:topRow];
@@ -511,7 +512,8 @@ const CGFloat kIconViewLength = 24;
                              }
                                      customRowHeight:UITableViewAutomaticDimension
                                          actionBlock:nil]];
-
+    self.disappearingMessagesConfiguration.enabled = YES;
+    [self updateDisappearingMessagesDurationLabel];
     if (self.disappearingMessagesConfiguration.isEnabled) {
         [mainSection
             addItem:[OWSTableItem
@@ -1187,8 +1189,7 @@ const CGFloat kIconViewLength = 24;
 {
     UISwitch *disappearingMessagesSwitch = (UISwitch *)sender;
 
-    [self toggleDisappearingMessages:disappearingMessagesSwitch.isOn];
-
+    [self toggleDisappearingMessages: YES]; //disappearingMessagesSwitch.isOn
     [self updateTableContents];
 }
 
