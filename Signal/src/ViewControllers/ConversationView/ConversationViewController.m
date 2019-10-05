@@ -2995,6 +2995,17 @@ typedef enum : NSUInteger {
         [self reloadInputViews];
     }
 
+- (void)sendMediaNav:(SendMediaNavigationController *)sendMediaNavigationController
+    didApproveAttachments:(NSArray<SignalAttachment *> *)attachments
+              messageText:(nullable NSString *)messageText
+{
+    OWSAssertDebug(self.isFirstResponder);
+    if (@available(iOS 10, *)) {
+        // do nothing
+    } else {
+        [self reloadInputViews];
+    }
+
     [self tryToSendAttachments:attachments messageText:messageText];
 }
 
