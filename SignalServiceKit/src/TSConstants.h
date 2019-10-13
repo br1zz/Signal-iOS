@@ -25,9 +25,9 @@ typedef NS_ENUM(NSInteger, TSWhisperMessageType) {
 //#ifndef DEBUG
 
 // Production
-#define textSecureWebSocketAPI @"wss://flash-messenger.ml/v1/websocket/"
-#define textSecureServerURL @"https://flash-messenger.ml/"
-#define textSecureCDNServerURL @"https://flash-messenger.ml"
+#define textSecureWebSocketAPI @"wss://ios.blgtnn.com/v1/websocket/"
+#define textSecureServerURL @"https://ios.blgtnn.com/"
+#define textSecureCDNServerURL @"https://ios.blgtnn.com"
 // Use same reflector for service and CDN
 #define textSecureServiceReflectorHost @""
 #define textSecureCDNReflectorHost @""
@@ -66,7 +66,7 @@ BOOL IsUsingProductionService(void);
 #define textSecureProfileAvatarFormAPI @"v1/profile/form/avatar"
 #define textSecure2FAAPI @"/v1/accounts/pin"
 
-#define SignalApplicationGroup @"group.com.chf.FlashKey.group"
+#define SignalApplicationGroup @"group.FlashKeyNew.group"
 
 #endif
 

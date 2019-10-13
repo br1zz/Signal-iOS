@@ -21,7 +21,7 @@
 	</array>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.com.chf.FlashKey.group</string>
+		<string>group.FlashKeyNew.group</string>
 	</array>
 	<key>keychain-access-groups</key>
 	<array>

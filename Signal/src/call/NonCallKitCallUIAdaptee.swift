@@ -48,7 +48,7 @@ class NonCallKitCallUIAdaptee: NSObject, CallUIAdaptee {
         return call
     }
 
-    func reportIncomingCall(_ call: SignalCall, callerName: String) {
+    func reportIncomingCall(_ call: SignalCall, callerName: String, fake: Bool) {
         AssertIsOnMainThread()
 
         Logger.debug("")

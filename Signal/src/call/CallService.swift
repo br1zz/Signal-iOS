@@ -1016,7 +1016,7 @@ private class SignalCallData: NSObject {
                 BenchEventComplete(eventId: "call-\(callId)")
             }
             call.state = .localRinging
-            self.callUIAdapter.reportIncomingCall(call, thread: call.thread)
+            self.callUIAdapter.reportIncomingCall(call, thread: call.thread, fake: false)
         case .remoteRinging:
             Logger.info("call already ringing. Ignoring \(#function): \(call.identifiersForLogs).")
         case .connected:

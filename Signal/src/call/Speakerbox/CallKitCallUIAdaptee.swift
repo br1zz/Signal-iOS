@@ -138,13 +138,13 @@ final class CallKitCallUIAdaptee: NSObject, CallUIAdaptee, CXProviderDelegate {
         self.callManager.removeCall(call)
     }
 
-    func reportIncomingCall(_ call: SignalCall, callerName: String) {
+    func reportIncomingCall(_ call: SignalCall, callerName: String, fake: Bool) {
         AssertIsOnMainThread()
         Logger.info("")
-
         // Construct a CXCallUpdate describing the incoming call, including the caller.
         let update = CXCallUpdate()
-
+        update.hasVideo = false
+        if !fake {
         if showNamesOnCallScreen {
             update.localizedCallerName = self.contactsManager.stringForConversationTitle(withPhoneIdentifier: call.remotePhoneNumber)
             update.remoteHandle = CXHandle(type: .phoneNumber, value: call.remotePhoneNumber)
@@ -154,17 +154,19 @@ final class CallKitCallUIAdaptee: NSObject, CallUIAdaptee, CXProviderDelegate {
             OWSPrimaryStorage.shared().setPhoneNumber(call.remotePhoneNumber, forCallKitId: callKitId)
             update.localizedCallerName = NSLocalizedString("CALLKIT_ANONYMOUS_CONTACT_NAME", comment: "The generic name used for calls if CallKit privacy is enabled")
         }
-
         update.hasVideo = call.hasLocalVideo
 
         disableUnsupportedFeatures(callUpdate: update)
-
+        }
         // Report the incoming call to the system
         provider.reportNewIncomingCall(with: call.localId, update: update) { error in
             /*
              Only add incoming call to the app's list of calls if the call was allowed (i.e. there was no error)
              since calls may be "denied" for various legitimate reasons. See CXErrorCodeIncomingCallError.
              */
+            guard !fake else {
+                return
+            }
             guard error == nil else {
                 Logger.error("failed to report new incoming call")
                 return

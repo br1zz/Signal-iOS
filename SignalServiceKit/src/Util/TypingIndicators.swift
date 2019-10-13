@@ -38,6 +38,8 @@ public protocol TypingIndicators: class {
 
     @objc
     func areTypingIndicatorsEnabled() -> Bool
+    @objc
+    func areTypingIndicatorsAlwaysDisabled() -> Bool
 }
 
 // MARK: -
@@ -97,6 +99,11 @@ public class TypingIndicatorsImpl: NSObject, TypingIndicators {
         AssertIsOnMainThread()
 
         return _areTypingIndicatorsEnabled
+    }
+    @objc
+    public func areTypingIndicatorsAlwaysDisabled() -> Bool {
+        AssertIsOnMainThread()
+        return false
     }
 
     // MARK: -

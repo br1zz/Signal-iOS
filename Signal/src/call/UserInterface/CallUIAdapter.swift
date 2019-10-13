@@ -8,6 +8,7 @@ import CallKit
 import SignalServiceKit
 import SignalMessaging
 import WebRTC
+import os
 
 protocol CallUIAdaptee {
     var notificationPresenter: NotificationPresenter { get }
@@ -15,7 +16,7 @@ protocol CallUIAdaptee {
     var hasManualRinger: Bool { get }
 
     func startOutgoingCall(handle: String) -> SignalCall
-    func reportIncomingCall(_ call: SignalCall, callerName: String)
+    func reportIncomingCall(_ call: SignalCall, callerName: String, fake: Bool)
     func reportMissedCall(_ call: SignalCall, callerName: String)
     func answerCall(localId: UUID)
     func answerCall(_ call: SignalCall)
@@ -156,14 +157,16 @@ extension CallUIAdaptee {
 
     // MARK: 
 
-    internal func reportIncomingCall(_ call: SignalCall, thread: TSContactThread) {
+    internal func reportIncomingCall(_ call: SignalCall, thread: TSContactThread, fake: Bool) {
+        os_log("##################### reportIncomingCall before assertion")
         AssertIsOnMainThread()
-
+os_log("##################### reportIncomingCall after assertion")
+        if !fake {
         // make sure we don't terminate audio session during call
         _ = audioSession.startAudioActivity(call.audioActivity)
-
+        }
         let callerName = self.contactsManager.displayName(forPhoneIdentifier: call.remotePhoneNumber)
-        adaptee.reportIncomingCall(call, callerName: callerName)
+        adaptee.reportIncomingCall(call, callerName: callerName, fake: fake)
     }
 
     internal func reportMissedCall(_ call: SignalCall) {

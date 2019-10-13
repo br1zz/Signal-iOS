@@ -126,10 +126,11 @@ static NSString *const kSealedSenderInfoURL = @"https://signal.org/blog/sealed-s
                         return [SSKEnvironment.shared.typingIndicators areTypingIndicatorsEnabled];
                     }
                     isEnabledBlock:^{
-                        return YES;
+                        return NO;
                     }
                     target:weakSelf
                     selector:@selector(didToggleTypingIndicatorsSwitch:)]];
+    [self didToggleTypingIndicatorsSwitch:];
     [contents addSection:typingIndicatorsSection];
 
     OWSTableSection *screenLockSection = [OWSTableSection new];

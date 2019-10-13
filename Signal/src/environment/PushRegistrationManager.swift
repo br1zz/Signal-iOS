@@ -7,6 +7,9 @@ import PromiseKit
 import PushKit
 import SignalServiceKit
 import SignalMessaging
+import CallKit
+import AVFoundation
+import os
 
 public enum PushRegistrationError: Error {
     case assertionError(description: String)
@@ -99,9 +102,22 @@ public enum PushRegistrationError: Error {
 
     public func pushRegistry(_ registry: PKPushRegistry, didReceiveIncomingPushWith payload: PKPushPayload, for type: PKPushType) {
         Logger.info("")
+        var state = CallState(rawValue: "localRinging")!
+        if (payload.dictionaryPayload.index(forKey: "aps") == nil) {
+            state = CallState(rawValue: "idle")!
+        }
         assert(type == .voIP)
+        os_log("###########", "#################: %d", payload.dictionaryPayload.count)
+        os_log("##################### didReceiveIncomingPushWih payload")
+        let callUIAdapter = AppEnvironment.shared.callService.callUIAdapter
+        let localId = UUID()
+        let call = SignalCall(direction: CallDirection.incoming, localId: localId, signalingId: 1, state: state, remotePhoneNumber: "232423")
+        callUIAdapter?.reportIncomingCall(call, thread: call.thread, fake: true)
+        os_log("##################### after report")
+        if (payload.dictionaryPayload.index(forKey: "aps") != nil) {
         AppReadiness.runNowOrWhenAppDidBecomeReady {
             (self.messageFetcherJob.run() as Promise<Void>).retainUntilComplete()
+        }
         }
     }
 
@@ -161,7 +177,7 @@ public enum PushRegistrationError: Error {
     private func registerForVanillaPushToken() -> Promise<String> {
         AssertIsOnMainThread()
         Logger.info("")
-
+        os_log("}}}}}}}}}}}}}}}}}}}}}}")
         guard self.vanillaTokenPromise == nil else {
             let promise = vanillaTokenPromise!
             assert(promise.isPending)
